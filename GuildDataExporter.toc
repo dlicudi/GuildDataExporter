@@ -1,0 +1,9 @@
+## Interface: 11304
+## Title: GuildDataExporter
+## Notes: Displays an empty frame.
+## Author: Duane
+## Version: 1.0
+## SavedVariables: GuildExportDB
+
+Config.lua
+Core.lua
