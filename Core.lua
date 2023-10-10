@@ -1,11 +1,9 @@
 LoadAddOn("Blizzard_GuildUI")
-local GuildExport = LibStub("AceAddon-3.0"):GetAddon("GuildExport")
-
-
+local GuildDataExporter = LibStub("AceAddon-3.0"):GetAddon("GuildDataExporter")
 
 local exportButton = CreateFrame("Button", nil, GuildFrame, "UIPanelButtonTemplate")
 exportButton:SetSize(80, 22)  -- width, height
-exportButton:SetText("Export")
+exportButton:SetText("GDE")
 exportButton:SetPoint("TOPLEFT", GuildFrame, "TOPLEFT", 40, -25)
 
 
@@ -76,14 +74,19 @@ local function UpdateGuildData()
     local info = ""
     local numMembers = GetNumGuildMembers()
 
-    local ranks = GuildExport.db.profile.ranks
+    local ranks = GuildDataExporter.db.profile.ranks
 
     for i = 1, numMembers do
         local name, rank, _, level = GetGuildRosterInfo(i)
         local rankValue = ranks[rank] or nil
         if rankValue and level == 60 and rankValue > 0 then
-            info = info .. name .. "," .. rankValue .. "\n"
+            info = info .. name .. "\t" .. rankValue .. "\n"
+            -- info = info .. name .. "\t" .. rank .. "\n"
         end
+        -- years, months, days, hours = GetGuildRosterLastOnline(i);
+        -- years, months, days, hours = years and years or 0, months and months or 0, days and days or 0, hours and hours or 0;
+        -- toff = (((years*12)+months)*30.5+days)*24+hours;
+        -- info = info .. name .. "," .. tostring(toff) .. "\n"
     end
     
     editBox:SetText(info)
