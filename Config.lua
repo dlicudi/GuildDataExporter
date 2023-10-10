@@ -2,9 +2,9 @@ local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceDB = LibStub("AceDB-3.0")
 local AceSerializer = LibStub("AceSerializer-3.0")
+LoadAddOn("Blizzard_GuildUI")
 
-GuildExport = LibStub("AceAddon-3.0"):NewAddon("GuildExport", "AceConsole-3.0")
-
+GuildDataExporter = LibStub("AceAddon-3.0"):NewAddon("GuildDataExporter", "AceConsole-3.0")
 
 
 local function getGuildRanksOptions()
@@ -20,10 +20,10 @@ local function getGuildRanksOptions()
                 step = 100,
                 order = i,
                 set = function(info, value)
-                    GuildExport.db.profile.ranks[rankName] = value
+                    GuildDataExporter.db.profile.ranks[rankName] = value
                 end,
                 get = function()
-                    return GuildExport.db.profile.ranks[rankName] or 0
+                    return GuildDataExporter.db.profile.ranks[rankName] or 0
                 end
             }
         end
@@ -47,13 +47,13 @@ local options = {
 -- Your existing code...
 
 local function getConfigData()
-    return AceSerializer:Serialize(GuildExport.db.profile)
+    return AceSerializer:Serialize(GuildDataExporter.db.profile)
 end
 
 local function setConfigData(value)
     local success, data = AceSerializer:Deserialize(value)
     if success then
-        GuildExport.db.profile = data
+        GuildDataExporter.db.profile = data
         print("Configuration updated successfully!")
     else
         print("Failed to update configuration: ", data)  -- data contains the error message
@@ -97,9 +97,19 @@ options.args.refreshButton = {
     end
 }
 
+local isInitialLogin = true
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:SetScript("OnEvent", function(self, event, isInitialLogin)
+    if isInitialLogin then
+        options.args.ranks.args = getGuildRanksOptions()
+        self:UnregisterEvent("PLAYER_ENTERING_WORLD") -- Optionally stop listening after the first login
+    end
+end)
 
-function GuildExport:OnInitialize()
+
+function GuildDataExporter:OnInitialize()
     self.db = AceDB:New("GuildDataExporterDB", { profile = { ranks = {} } })
-    AceConfig:RegisterOptionsTable("GuildExport", options)
-    AceConfigDialog:AddToBlizOptions("GuildExport", "GuildExport")
+    AceConfig:RegisterOptionsTable("GuildDataExporter", options)
+    AceConfigDialog:AddToBlizOptions("GuildDataExporter", "GuildDataExporter")
 end

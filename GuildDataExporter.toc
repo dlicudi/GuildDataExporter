@@ -3,7 +3,7 @@
 ## Notes: Displays an empty frame.
 ## Author: Duane
 ## Version: 1.0
-## SavedVariables: GuildExportDB
+## SavedVariables: GuildDataExporterDB
 
 Config.lua
 Core.lua
