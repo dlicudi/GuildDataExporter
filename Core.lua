@@ -129,6 +129,10 @@ function CreateTabbedFrame()
     -- Create the main frame
     frame = AceGUI:Create("Frame")
 
+    _G["MyGlobalFrameName"] = frame.frame
+    tinsert(UISpecialFrames, "MyGlobalFrameName")
+
+
     frame:SetTitle("Guild Data Exporter")
     frame:SetWidth(600)
     frame:SetHeight(400)
@@ -210,3 +214,13 @@ exportButton:SetScript("OnClick", function()
         UpdateGuildData()
     end
 end)
+
+SLASH_GDE1 = "/gde"
+
+SlashCmdList["GDE"] = function(msg)
+    if frame:IsVisible() then
+        frame:Hide()
+    else
+        frame:Show()
+    end
+end

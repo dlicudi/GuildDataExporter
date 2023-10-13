@@ -1,9 +1,9 @@
 ## Interface: 11304
 ## Title: GuildDataExporter
-## Notes: Displays an empty frame.
-## Author: Duane
-## Version: 1.0
+## Notes: Exports guild data
+## Author: Duane/Pogge6
+## Version: 1.1
 ## SavedVariables: GuildDataExporterDB
-
+## Dependencies: Ace3
 Config.lua
 Core.lua
