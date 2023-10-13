@@ -16,7 +16,7 @@ local function getGuildRanksOptions()
                 type = "range",
                 name = rankName,
                 min = 0,
-                max = 1000,  -- You can adjust the maximum value based on your needs
+                max = 1000,
                 step = 100,
                 order = i,
                 set = function(info, value)
@@ -31,6 +31,18 @@ local function getGuildRanksOptions()
     return options
 end
 
+local function getGuildRankList()
+    local rankList = {}
+    for i = 1, GuildControlGetNumRanks() do
+        local rankName = GuildControlGetRankName(i)
+        if rankName and rankName ~= "" then
+            rankList[rankName] = rankName
+        end
+    end
+    return rankList
+end
+
+
 local options = {
     name = "GuildExport",
     type = "group",
@@ -43,8 +55,38 @@ local options = {
     },
 }
 
+options.args.ranks.args.trialRaider = {
+    order = -1,  -- or any number to position it at the top or wherever you want within the ranks group
+    type = "select",
+    name = "Trial Raider Rank",
+    desc = "Select the guild rank which represents trial raiders.",
+    values = getGuildRankList,  -- This will retrieve the list of ranks
+    set = function(info, value)
+        GuildDataExporter.db.profile.trialRaiderRank = value
+    end,
+    get = function()
+        return GuildDataExporter.db.profile.trialRaiderRank
+    end
+}
 
--- Your existing code...
+
+options.args.ranks.args.offlineThreshold = {
+    order = 100, -- This order value ensures it comes below the other rank options. Adjust if necessary.
+    type = "range",
+    name = "Offline Threshold (hours)",
+    desc = "Number of hours after which a player is considered to be offline for a long time.",
+    min = 24,  -- You can adjust these values as per your requirements
+    max = 8760,  -- 365 days in hours
+    step = 1,
+    set = function(info, value)
+        GuildDataExporter.db.profile.offlineThresholdHours = value
+    end,
+    get = function()
+        return GuildDataExporter.db.profile.offlineThresholdHours
+    end
+}
+
+
 
 local function getConfigData()
     return AceSerializer:Serialize(GuildDataExporter.db.profile)
